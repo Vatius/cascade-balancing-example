@@ -1,9 +1,9 @@
-# test-server
-test work, GoLang, js
+# Cascade balancing example
+This is test work: GoLang, js
 
-Запускаем сервер, например так (windows):
+Start server (for example):
 
-./test-server.exe -addr=localhost:8081 -slave=http://localhost:8082 -max=2
+`./test-server.exe -addr=localhost:8081 -slave=http://localhost:8082 -max=2`
 
 Здесь с помощью флагов указан андрес, на котором будет работать сервер, адрес сервера на который будут перенаправляться запросы и максимальное кол-во обрабатываемых запросов в секунду.
 

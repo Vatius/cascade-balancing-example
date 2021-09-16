@@ -12,11 +12,15 @@ import (
 	"time"
 )
 
+// todo: get rid of global variables
 var myAddr string
 var slaveAddr string
 var maxRequests int
 var currentRequests int
 
+// todo: make models
+
+// Record test payload object
 type Record struct {
 	Price    int `json:"price"`
 	Quantity int `json:"quantity"`

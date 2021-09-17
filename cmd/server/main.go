@@ -8,7 +8,6 @@ import (
 	"github.com/rs/cors"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -29,6 +28,12 @@ type Record struct {
 	Method   int `json:"method"`
 }
 
+// Balancer ...
+type Balancer struct {
+	maxRequests     int
+	currentRequests int
+}
+
 func init() {
 	flag.StringVar(&myAddr, "addr", "localhost:8081", "use -addr=127.0.0.1:8081")
 	flag.StringVar(&slaveAddr, "slave", "", "use -slave=127.0.0.1:8082")
@@ -37,11 +42,11 @@ func init() {
 }
 
 func main() {
-	log.Println("Starting server on " + myAddr)
-	log.Println("Maximum requests: " + strconv.Itoa(maxRequests))
+	log.Println("Starting server on", myAddr)
+	log.Println("Maximum requests:", maxRequests)
 
 	if slaveAddr != "" {
-		log.Println("Slave server: " + slaveAddr)
+		log.Println("Slave server:", slaveAddr)
 	} else {
 		log.Println("Without slave server")
 	}
@@ -54,45 +59,7 @@ func main() {
 	}()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		currentRequests++
-		if r.Method != "POST" {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		if currentRequests > maxRequests {
-			//send to slave server
-			if slaveAddr == "" {
-				w.WriteHeader(http.StatusServiceUnavailable)
-				return
-			}
-			resp, err := http.Post(slaveAddr, "text/plain", r.Body)
-			if err != nil {
-				panic(err)
-			}
-			defer resp.Body.Close()
-			if resp.StatusCode == 200 {
-				_, _ = fmt.Fprintf(w, "{ \"success\": true}")
-				return
-			} else {
-				//slave server error
-				w.WriteHeader(http.StatusServiceUnavailable)
-				return
-			}
-		}
-
-		decoder := json.NewDecoder(r.Body)
-		var rec []Record
-		err := decoder.Decode(&rec)
-		if err != nil {
-			panic(err)
-		}
-		log.Println("Received data:")
-		for _, item := range rec {
-			log.Println(item)
-		}
-		_, _ = fmt.Fprintf(w, "{ \"success\": true}")
-	})
+	router.HandleFunc("/", handler)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -103,4 +70,44 @@ func main() {
 	handler := c.Handler(router)
 
 	log.Fatal(http.ListenAndServe(myAddr, handler))
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	currentRequests++
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if currentRequests > maxRequests {
+		//send to slave server
+		if slaveAddr == "" {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		resp, err := http.Post(slaveAddr, "text/plain", r.Body)
+		if err != nil {
+			panic(err)
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode == 200 {
+			_, _ = fmt.Fprintf(w, "{ \"success\": true}")
+			return
+		} else {
+			//slave server error
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	var rec []Record
+	err := decoder.Decode(&rec)
+	if err != nil {
+		panic(err)
+	}
+	log.Println("Received data:")
+	for _, item := range rec {
+		log.Println(item)
+	}
+	_, _ = fmt.Fprintf(w, "{ \"success\": true}")
 }

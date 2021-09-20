@@ -13,14 +13,19 @@ import (
 
 var (
 	serverUrl = flag.String("url", "http://localhost:8080/", "use -url=http://127.0.0.1:8082/")
-	interval  = flag.Int("interval", 1000, "use -interval=3000")
+	interval  = flag.String("interval", "1s", "use -interval=3000")
 )
 
 func main() {
 	flag.Parse()
 	log.Printf("Starting client, server url: %v, interval: %v ms \n", *serverUrl, *interval)
 	defer log.Println("Bye!")
-	ticker := time.NewTicker(time.Second) // set interval
+	parsedInterval, err := time.ParseDuration(*interval)
+	if err != nil {
+		log.Println("Invalid interval")
+		return
+	}
+	ticker := time.NewTicker(parsedInterval)
 	w := sync.WaitGroup{}
 	w.Add(1)
 	go func() {

@@ -6,7 +6,7 @@ This is test GoLang work
 
 `# make`
 
-`# ./bin/server -addr=localhost:8081 -slave=http://localhost:8082 -max=2`
+`# bin/server -addr=localhost:8081 -slave=http://localhost:8082 -max=2`
 
 Здесь с помощью флагов указан андрес, на котором будет работать сервер, адрес сервера на который будут перенаправляться запросы и максимальное кол-во обрабатываемых запросов в секунду.
 
@@ -16,10 +16,11 @@ This is test GoLang work
 
 Client send test data to server
 
-`# ./bin/client -interval=1s -url=http://localhost:8080/`
+`# bin/client -interval=1s -url=http://localhost:8080/`
 
-Request schema:
-#### GET /
+### Request schema:
+
+#### POST /
 `[{
 "price": int,
 "quantity": int,

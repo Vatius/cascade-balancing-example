@@ -1,15 +1,22 @@
 # Cascade balancing example
-This is test work: GoLang, js
 
-Start server (for example):
+This is test GoLang work
 
-`./test-server.exe -addr=localhost:8081 -slave=http://localhost:8082 -max=2`
+### Server
+
+`# make`
+
+`# ./bin/server -addr=localhost:8081 -slave=http://localhost:8082 -max=2`
 
 Здесь с помощью флагов указан андрес, на котором будет работать сервер, адрес сервера на который будут перенаправляться запросы и максимальное кол-во обрабатываемых запросов в секунду.
 
-По заданию запустить в 3-х экземплярах, соответственно, три сервера с разными адресами и ссылками друг на друга, последний не имеет флага slave.
+Можно запускать несколько экземпляров с разными адресами и ссылками друг на друга, последний не имеет флага slave.
 
-Клиент - надо переписать на го.
+### Client
+
+Client send test data to server
+
+`# ./bin/client -interval=1s -url=http://localhost:8080/`
 
 Request schema:
 #### GET /

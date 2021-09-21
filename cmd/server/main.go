@@ -4,20 +4,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	model "github.com/Vatius/cascade-balancing-example"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
 )
-
-// Payload just for test
-type Payload struct {
-	Price    int `json:"price"`
-	Quantity int `json:"quantity"`
-	Amount   int `json:"amount"`
-	Object   int `json:"object"`
-	Method   int `json:"method"`
-}
 
 // Balancer ...
 type Balancer struct {
@@ -96,7 +88,7 @@ func handlerPostPayload(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	var records []Payload
+	var records []model.Payload
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("cant read body", err)
@@ -116,7 +108,7 @@ func handlerPostPayload(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func printRecords(rec ...Payload) {
+func printRecords(rec ...model.Payload) {
 	log.Println("Received data:")
 	for _, item := range rec {
 		log.Println(item)

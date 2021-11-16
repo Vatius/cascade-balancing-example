@@ -1,3 +1,5 @@
+![AppVeyor tests](https://img.shields.io/appveyor/tests/Vatius/cascade-balancing-example)
+
 # Cascade balancing example
 
 This is test GoLang work

@@ -1,4 +1,7 @@
-![AppVeyor tests](https://img.shields.io/appveyor/tests/Vatius/cascade-balancing-example)
+![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/Vatius/cascade-balancing-example)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Vatius/cascade-balancing-example/build)
+![GitHub issues](https://img.shields.io/github/issues/Vatius/cascade-balancing-example)
+![GitHub repo size](https://img.shields.io/github/repo-size/Vatius/cascade-balancing-example)
 
 # Cascade balancing example
 
